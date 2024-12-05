@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lyes_slimani_dm/shared/models/post.dart';
 import 'package:lyes_slimani_dm/shared/services/remote_posts/api_post_source/fake_posts_data_source.dart';
 import 'package:lyes_slimani_dm/shared/services/remote_posts/api_post_source/remote_post_data_source.dart';
+import 'package:lyes_slimani_dm/shared/services/repositories/PostRepository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,16 +36,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Post> posts = List.empty();
   final RemotePostDataSource remotePostDataSource = FakePostDataSource();
+  late final PostRepository postRepository =
+      PostRepository(remotePostDataSource: remotePostDataSource);
 
   Future<void> getData() async {
-    List<Post> retrievedPosts = await remotePostDataSource.getAllPosts();
+    List<Post> retrievedPosts = await postRepository.getAllPosts();
     setState(() {
       posts = List.unmodifiable(retrievedPosts);
     });
   }
 
   void _incrementCounter() async {
-    await remotePostDataSource.createPost(
+    await postRepository.createPost(
       title: 'Post ${DateTime.timestamp()}',
       description: 'description',
     );
