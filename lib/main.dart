@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lyes_slimani_dm/post_list.dart';
+import 'package:lyes_slimani_dm/screens/post_list/post_list_page.dart';
 import 'package:lyes_slimani_dm/shared/blocs/post_bloc/post_list_bloc.dart';
 import 'package:lyes_slimani_dm/shared/services/remote_posts/api_post_source/fake_posts_data_source.dart';
 import 'package:lyes_slimani_dm/shared/services/repositories/PostRepository.dart';
