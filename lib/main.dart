@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lyes_slimani_dm/shared/models/post.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lyes_slimani_dm/post_list.dart';
+import 'package:lyes_slimani_dm/shared/blocs/post_bloc/post_list_bloc.dart';
 import 'package:lyes_slimani_dm/shared/services/remote_posts/api_post_source/fake_posts_data_source.dart';
-import 'package:lyes_slimani_dm/shared/services/remote_posts/api_post_source/remote_post_data_source.dart';
 import 'package:lyes_slimani_dm/shared/services/repositories/PostRepository.dart';
 
 void main() {
@@ -13,77 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<Post> posts = List.empty();
-  final RemotePostDataSource remotePostDataSource = FakePostDataSource();
-  late final PostRepository postRepository =
-      PostRepository(remotePostDataSource: remotePostDataSource);
-
-  Future<void> getData() async {
-    List<Post> retrievedPosts = await postRepository.getAllPosts();
-    setState(() {
-      posts = List.unmodifiable(retrievedPosts);
-    });
-  }
-
-  void _incrementCounter() async {
-    await postRepository.createPost(
-      title: 'Post ${DateTime.timestamp()}',
-      description: 'description',
-    );
-    await getData();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    getData();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              posts.length.toString(),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ...posts.map((post) {
-              return Text(post.title);
-            })
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+    return RepositoryProvider(
+      create: (context) =>
+          PostRepository(remotePostDataSource: FakePostDataSource()),
+      child: BlocProvider(
+          create: (context) =>
+              PostListBloc(postRepository: context.read<PostRepository>()),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: true,
+            routes: {
+              '/': (context) => const PostListPage(),
+            },
+          )),
     );
   }
 }

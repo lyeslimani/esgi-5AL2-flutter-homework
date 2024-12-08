@@ -13,12 +13,13 @@ class FakePostDataSource extends RemotePostDataSource {
   @override
   Future<List<Post>> getAllPosts() async {
     List<Post> posts = List.from(_fakePosts);
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 500));
     return posts;
   }
 
   @override
   Future<Post> createPost({required title, required description}) async {
+    await Future.delayed(const Duration(milliseconds: 1500));
     Post newPost = Post(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: title,
@@ -37,7 +38,7 @@ class FakePostDataSource extends RemotePostDataSource {
     if (postToUpdateIndex == -1) {
       throw PostDoesNotExistException();
     }
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 1500));
     Post updatedPost = Post(id: id, title: title, description: description);
     _fakePosts[postToUpdateIndex] = updatedPost;
 
