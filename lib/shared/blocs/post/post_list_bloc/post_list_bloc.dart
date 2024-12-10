@@ -1,17 +1,26 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lyes_slimani_dm/shared/services/repositories/PostRepository.dart';
 
-import '../../exceptions/app_exception.dart';
-import '../../models/post.dart';
+import '../../../exceptions/app_exception.dart';
+import '../../../models/post.dart';
+import '../post_bloc/post_bloc.dart';
+import '../post_bloc/post_state.dart';
 
 part 'post_list_event.dart';
+
 part 'post_list_state.dart';
 
 class PostListBloc extends Bloc<PostListEvent, PostListState> {
   final PostRepository postRepository;
+  late StreamSubscription<PostState> _postBlocSubscription;
 
-  PostListBloc({required this.postRepository}) : super(const PostListState()) {
+  PostListBloc({
+    required this.postRepository,
+    required PostBloc postBloc,
+  }) : super(const PostListState()) {
     on<GetAllPost>((event, emit) async {
       try {
         emit(state.copyWith(status: PostListStatus.loading));
@@ -29,23 +38,13 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
       }
     });
 
-    on<CreateNewPost>((event, emit) async {
-      try {
-        emit(state.copyWith(status: PostListStatus.loading));
-        Post createdPost = await postRepository.createPost(
-            title: event.title, description: event.description);
-        emit(state.copyWith(
-          status: PostListStatus.success,
-          postLists: [...state.postLists, createdPost],
-        ));
-      } catch (error) {
-        final appException = AppException.from(error);
-        emit(state.copyWith(
-          status: PostListStatus.error,
-          exception: appException,
-        ));
-      }
+    on<AddNewlyCreatedPost>((event, emit) {
+      emit(state.copyWith(
+        status: PostListStatus.success,
+        postLists: [...state.postLists, event.post],
+      ));
     });
+
     on<UpdatePost>((event, emit) async {
       try {
         emit(state.copyWith(status: PostListStatus.loading));
@@ -73,5 +72,18 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
         ));
       }
     });
+
+    _postBlocSubscription = postBloc.stream.listen((postState) {
+      if (postState.status == PostStatus.successCreatingPost &&
+          postState.createdPost != null) {
+        add(AddNewlyCreatedPost(post: postState.createdPost!));
+      }
+    });
+
+    @override
+    Future<void> close() {
+      _postBlocSubscription.cancel();
+      return super.close();
+    }
   }
 }

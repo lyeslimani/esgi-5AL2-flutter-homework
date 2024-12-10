@@ -7,14 +7,10 @@ sealed class PostListEvent {
 
 class GetAllPost extends PostListEvent {}
 
-class CreateNewPost extends PostListEvent {
-  final String title;
-  final String description;
+class AddNewlyCreatedPost extends PostListEvent {
+  final Post post;
 
-  const CreateNewPost({
-    required this.title,
-    required this.description,
-  });
+  const AddNewlyCreatedPost({required this.post});
 }
 
 class UpdatePost extends PostListEvent {
