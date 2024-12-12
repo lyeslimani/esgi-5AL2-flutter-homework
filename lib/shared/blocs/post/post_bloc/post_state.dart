@@ -8,6 +8,9 @@ enum PostStatus {
   creatingPost,
   errorCreatingPost,
   successCreatingPost,
+  updatingPost,
+  errorUpdatingPost,
+  successUpdatingPost,
 }
 
 @immutable

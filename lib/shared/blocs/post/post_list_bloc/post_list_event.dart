@@ -13,14 +13,8 @@ class AddNewlyCreatedPost extends PostListEvent {
   const AddNewlyCreatedPost({required this.post});
 }
 
-class UpdatePost extends PostListEvent {
-  final String id;
-  final String title;
-  final String description;
+class SyncUpdatedPost extends PostListEvent {
+  final Post post;
 
-  const UpdatePost({
-    required this.id,
-    required this.title,
-    required this.description,
-  });
+  const SyncUpdatedPost({required this.post});
 }

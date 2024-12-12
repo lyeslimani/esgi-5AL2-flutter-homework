@@ -6,13 +6,11 @@ import '../../shared/models/post.dart';
 class PostListComponent extends StatefulWidget {
   final List<Post> postList;
   final Future<void> Function()? refreshCallback;
-  final VoidCallback? longPressCallback;
 
   const PostListComponent({
     super.key,
     required this.postList,
     this.refreshCallback,
-    this.longPressCallback,
   });
 
   @override
@@ -43,8 +41,15 @@ class _PostListComponentState extends State<PostListComponent> {
           minVerticalPadding: 0,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          onLongPress: widget.longPressCallback,
-          title: PostListItem(post: post),
+          onTap: () => Navigator.pushNamed(
+            context,
+            'post',
+            arguments: post,
+          ),
+          title: PostListItem(
+            post: post,
+            longPressCallback: () => goToPostEdition(post),
+          ),
         );
       },
       itemCount: widget.postList.length,
@@ -68,5 +73,9 @@ class _PostListComponentState extends State<PostListComponent> {
         child: content,
       ),
     );
+  }
+
+  void goToPostEdition(Post postToUpdate) {
+    Navigator.pushNamed(context, 'post?view=edit', arguments: postToUpdate);
   }
 }

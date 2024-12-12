@@ -80,14 +80,7 @@ class _CreatePostFormState extends State<CreatePostForm> {
                   state.status == PostStatus.creatingPost
                       ? const LinearProgressIndicator()
                       : ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              createNewPost(
-                                title: _titleController.text,
-                                description: _descriptionController.text,
-                              );
-                            }
-                          },
+                          onPressed: onCreatePostSubmit,
                           child: const Text('Post'),
                         ),
                   const SizedBox(height: 8),
@@ -112,11 +105,6 @@ class _CreatePostFormState extends State<CreatePostForm> {
     );
   }
 
-  void createNewPost({required String title, required String description}) {
-    final postListBloc = context.read<PostBloc>();
-    postListBloc.add(CreateNewPost(title: title, description: description));
-  }
-
   void _onPostBlocListener(BuildContext context, PostState state) {
     switch (state.status) {
       case PostStatus.errorCreatingPost:
@@ -133,5 +121,19 @@ class _CreatePostFormState extends State<CreatePostForm> {
     setState(() {
       errorMessage = "Error in the creation of the post. Please try again";
     });
+  }
+
+  void onCreatePostSubmit() {
+    if (_formKey.currentState!.validate()) {
+      createNewPost(
+        title: _titleController.text,
+        description: _descriptionController.text,
+      );
+    }
+  }
+
+  void createNewPost({required String title, required String description}) {
+    final postListBloc = context.read<PostBloc>();
+    postListBloc.add(CreateNewPost(title: title, description: description));
   }
 }

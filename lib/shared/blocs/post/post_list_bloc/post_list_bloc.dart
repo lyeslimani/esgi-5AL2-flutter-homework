@@ -10,7 +10,6 @@ import '../post_bloc/post_bloc.dart';
 import '../post_bloc/post_state.dart';
 
 part 'post_list_event.dart';
-
 part 'post_list_state.dart';
 
 class PostListBloc extends Bloc<PostListEvent, PostListState> {
@@ -45,21 +44,15 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
       ));
     });
 
-    on<UpdatePost>((event, emit) async {
+    on<SyncUpdatedPost>((event, emit) {
       try {
-        emit(state.copyWith(status: PostListStatus.loading));
-        Post updatedPost = await postRepository.updatePost(
-          id: event.id,
-          title: event.title,
-          description: event.description,
-        );
         int indexOfPostToUpdate =
-            state.postLists.indexWhere((post) => post.id == event.id);
+            state.postLists.indexWhere((post) => post.id == event.post.id);
         if (indexOfPostToUpdate == -1) {
           throw PostDoesNotExistException();
         }
         List<Post> updatedPostList = List.from(state.postLists);
-        updatedPostList[indexOfPostToUpdate] = updatedPost;
+        updatedPostList[indexOfPostToUpdate] = event.post;
         emit(state.copyWith(
           status: PostListStatus.success,
           postLists: updatedPostList,
@@ -74,9 +67,18 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
     });
 
     _postBlocSubscription = postBloc.stream.listen((postState) {
-      if (postState.status == PostStatus.successCreatingPost &&
-          postState.createdPost != null) {
-        add(AddNewlyCreatedPost(post: postState.createdPost!));
+      switch (postState.status) {
+        case PostStatus.successCreatingPost:
+          if (postState.createdPost != null) {
+            add(AddNewlyCreatedPost(post: postState.createdPost!));
+          }
+          break;
+        case PostStatus.successUpdatingPost:
+          if (postState.createdPost != null) {
+            add(SyncUpdatedPost(post: postState.createdPost!));
+          }
+        default:
+          return;
       }
     });
 

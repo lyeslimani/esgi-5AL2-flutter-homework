@@ -14,3 +14,15 @@ class CreateNewPost extends PostEvent {
     required this.description,
   });
 }
+
+class UpdatePost extends PostEvent {
+  final String id;
+  final String title;
+  final String description;
+
+  const UpdatePost({
+    required this.id,
+    required this.title,
+    required this.description,
+  });
+}

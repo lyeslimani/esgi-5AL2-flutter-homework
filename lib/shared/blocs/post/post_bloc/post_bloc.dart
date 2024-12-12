@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lyes_slimani_dm/shared/blocs/post/post_bloc/post_state.dart';
 
 import '../../../exceptions/app_exception.dart';
+import '../../../models/post.dart';
 import '../../../services/repositories/PostRepository.dart';
 
 part 'post_event.dart';
@@ -27,6 +28,25 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         final appException = AppException.from(error);
         emit(state.copyWith(
           status: PostStatus.errorCreatingPost,
+          exception: appException,
+        ));
+      }
+    });
+
+    on<UpdatePost>((event, emit) async {
+      try {
+        emit(state.copyWith(status: PostStatus.updatingPost));
+        Post updatedPost = await postRepository.updatePost(
+          id: event.id,
+          title: event.title,
+          description: event.description,
+        );
+        emit(state.copyWith(
+            status: PostStatus.successUpdatingPost, createdPost: updatedPost));
+      } catch (error) {
+        final appException = AppException.from(error);
+        emit(state.copyWith(
+          status: PostStatus.errorUpdatingPost,
           exception: appException,
         ));
       }

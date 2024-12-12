@@ -93,12 +93,6 @@ class _PostListPageState extends State<PostListPage> {
     postListBloc.add(GetAllPost());
   }
 
-  void updatePost(String id, String newTitle, String newDescrption) {
-    final postListBloc = context.read<PostListBloc>();
-    postListBloc
-        .add(UpdatePost(id: id, title: newTitle, description: newDescrption));
-  }
-
   Widget _buildLoading() {
     return const Center(
       child: CircularProgressIndicator(),
