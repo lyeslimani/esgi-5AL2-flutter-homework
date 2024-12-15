@@ -17,12 +17,12 @@ enum PostStatus {
 class PostState {
   final PostStatus status;
   final AppException? exception;
-  final Post? createdPost;
+  final Post? lastUpdatedPost;
 
   const PostState({
     this.status = PostStatus.initial,
     this.exception,
-    this.createdPost,
+    this.lastUpdatedPost,
   });
 
   PostState copyWith({
@@ -33,7 +33,7 @@ class PostState {
     return PostState(
       status: status ?? this.status,
       exception: exception,
-      createdPost: createdPost ?? this.createdPost,
+      lastUpdatedPost: createdPost ?? this.lastUpdatedPost,
     );
   }
 }

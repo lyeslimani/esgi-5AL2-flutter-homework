@@ -55,6 +55,21 @@ class _PostListPageState extends State<PostListPage> {
                     color: Colors.transparent,
                   ))),
         ),
+        actions: [
+          IconButton(onPressed: getAllPosts, icon: const Icon(Icons.refresh)),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+            child: Tooltip(
+              triggerMode: TooltipTriggerMode.tap,
+              message: 'Tap on a post to open its page\n'
+                  'Long Press a post title to open the post edit page\n'
+                  'Long press on a truncated post content to expand it / truncate it back again\n',
+              enableFeedback: true,
+              showDuration: Duration(seconds: 3),
+              child: Icon(Icons.info),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: onPressed,
@@ -161,7 +176,7 @@ class _PostListPageState extends State<PostListPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.lightGreen,
-            content: Text('Post ajouté avec succès'),
+            content: Text('Post successfully posted 😃'),
           ),
         );
       default:

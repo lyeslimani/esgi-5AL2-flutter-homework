@@ -48,13 +48,6 @@ class _PostPageState extends State<PostPage> {
               backgroundColor: Colors.white,
               title: Row(
                 children: [
-                  const Text(
-                    'Post',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   const Expanded(child: SizedBox()),
                   IconButton(
                     onPressed: switchMode,
@@ -179,7 +172,7 @@ class _PostPageState extends State<PostPage> {
                         ? const Expanded(child: LinearProgressIndicator())
                         : ElevatedButton(
                             onPressed: onUpdatePostSubmit,
-                            child: const Text('Valider les modifications'),
+                            child: const Text('Confirm the edits'),
                           ),
                   ],
                 ),

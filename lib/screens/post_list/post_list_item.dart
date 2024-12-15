@@ -59,11 +59,16 @@ class _PostListItemState extends State<PostListItem> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    widget.post.title,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      widget.post.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],

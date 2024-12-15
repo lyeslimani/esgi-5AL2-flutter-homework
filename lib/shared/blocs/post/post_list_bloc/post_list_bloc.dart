@@ -69,13 +69,13 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
     _postBlocSubscription = postBloc.stream.listen((postState) {
       switch (postState.status) {
         case PostStatus.successCreatingPost:
-          if (postState.createdPost != null) {
-            add(AddNewlyCreatedPost(post: postState.createdPost!));
+          if (postState.lastUpdatedPost != null) {
+            add(AddNewlyCreatedPost(post: postState.lastUpdatedPost!));
           }
           break;
         case PostStatus.successUpdatingPost:
-          if (postState.createdPost != null) {
-            add(SyncUpdatedPost(post: postState.createdPost!));
+          if (postState.lastUpdatedPost != null) {
+            add(SyncUpdatedPost(post: postState.lastUpdatedPost!));
           }
         default:
           return;
